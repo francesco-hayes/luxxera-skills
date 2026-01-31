@@ -1,0 +1,7 @@
+{
+  "name": "luxxera-ui",
+  "displayName": "Luxxera UI Design System",
+  "description": "Premium healthcare UI components following the Luxxera design language. Built on Shadcn UI + Tailwind CSS.",
+  "version": "1.0.0",
+  "tags": ["design-system", "ui", "healthcare", "shadcn", "tailwindcss"]
+}

@@ -1,0 +1,28 @@
+# Dev reference (not needed in published package)
+LUXXERA_DESIGN_SYSTEM.md
+
+# System files
+.DS_Store
+Thumbs.db
+*.log
+node_modules/
+
+# Git files
+.git/
+.gitignore
+
+# Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Test files
+/tmp/
+/test-output/
+
+# The npm package only includes:
+# - bin/          (CLI script)
+# - skills/       (skill templates to install)
+# - README.md     (documentation)
+# - package.json  (package config)

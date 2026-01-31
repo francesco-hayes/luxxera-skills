@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Test output
+/tmp/
+/test-output/
+
+# Backup files created during updates
+.backup-*
+
+# NPM package files (generated on publish)
+*.tgz
+
+# Environment files
+.env
+.env.local
+.env.*.local

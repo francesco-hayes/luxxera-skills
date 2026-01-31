@@ -1,0 +1,37 @@
+{
+  "name": "@francesco-hayes/luxxera-skills",
+  "version": "1.0.0",
+  "description": "Luxxera Skills - AI-powered skills for design systems, API patterns, testing, and more",
+  "author": "Luxxera",
+  "license": "MIT",
+  "keywords": [
+    "luxxera",
+    "ai-skills",
+    "ai-agent",
+    "design-system",
+    "ui-components",
+    "claude",
+    "cursor",
+    "shadcn",
+    "tailwindcss",
+    "healthcare"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/francesco-hayes/luxxera-skills"
+  },
+  "bin": {
+    "luxxera-skills": "./bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "skills",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node bin/cli.js --help"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
