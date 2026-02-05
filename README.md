@@ -42,7 +42,7 @@ npx @francesco-hayes/luxxera-skills init --all
 npx @francesco-hayes/luxxera-skills init luxxera-ui --path ./custom/skills
 ```
 
-Each skill is installed to `.agents/skills/{skill-name}/` by default.
+Each skill is installed to `.claude/skills/{skill-name}/` by default.
 
 ### Update skill(s)
 
@@ -58,10 +58,10 @@ Updates create a timestamped backup before overwriting files.
 
 ## What Gets Installed
 
-Each skill installs to `.agents/skills/{skill-name}/` with:
+Each skill installs to `.claude/skills/{skill-name}/` with:
 
 ```text
-.agents/skills/{skill-name}/
+.claude/skills/{skill-name}/
 ├── AGENTS.md      → Agent identity and workflow
 ├── SKILL.md       → Skill triggers and quick reference
 └── rules/         → Detailed rules and documentation
@@ -74,7 +74,7 @@ Each skill installs to `.agents/skills/{skill-name}/` with:
 After installing a skill, add to your project's `CLAUDE.md`:
 
 ```markdown
-Reference the luxxera-ui skill in `.agents/skills/luxxera-ui/` for all UI development.
+Reference the luxxera-ui skill in `.claude/skills/luxxera-ui/` for all UI development.
 Always read the relevant rules before generating components.
 ```
 
@@ -89,7 +89,7 @@ Read the Luxxera agent rules and create a hero section for the procedures page
 Add to your rules or system prompt:
 
 ```
-When building UI components, reference the design system in .agents/skills/luxxera-ui/.
+When building UI components, reference the design system in .claude/skills/luxxera-ui/.
 Check foundations (colors, typography, spacing) before generating code.
 ```
 
@@ -101,7 +101,7 @@ This package replaces `@francesco-hayes/luxxera-agent`. The `luxxera-ui` skill c
 npx @francesco-hayes/luxxera-skills init luxxera-ui
 ```
 
-If you already have files at `.agents/skills/luxxera-ui/`, use `update` instead:
+If you already have files at `.claude/skills/luxxera-ui/`, use `update` instead:
 
 ```bash
 npx @francesco-hayes/luxxera-skills update luxxera-ui

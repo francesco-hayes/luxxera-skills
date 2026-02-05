@@ -35,6 +35,7 @@ ${COLORS.green}╔════════════════════�
 `;
 
 const DEFAULT_BASE_PATH = '.agents/skills';
+const CLAUDE_SKILLS_PATH = '.claude/skills';
 
 const HELP = `
 ${COLORS.bright}Usage:${COLORS.reset}
@@ -77,6 +78,9 @@ ${COLORS.bright}After Installation:${COLORS.reset}
   - AGENTS.md      → Agent identity and workflow
   - SKILL.md       → Skill triggers and quick reference
   - rules/         → Detailed skill rules and documentation
+
+  A symlink is created at ${COLORS.cyan}${CLAUDE_SKILLS_PATH}/{skill-name}/${COLORS.reset} → ${DEFAULT_BASE_PATH}/{skill-name}/
+  so Claude Code auto-discovers the skill.
 `;
 
 // --- Skill Discovery ---
@@ -159,6 +163,44 @@ function countFiles(dir) {
   return count;
 }
 
+function createClaudeSymlink(skillId, basePath) {
+  // Only create symlink if basePath is the default (.agents/skills)
+  const defaultBase = path.join(process.cwd(), DEFAULT_BASE_PATH);
+  if (path.resolve(basePath) !== path.resolve(defaultBase)) {
+    return; // Custom path, skip symlink
+  }
+
+  const claudeSkillDir = path.join(process.cwd(), CLAUDE_SKILLS_PATH);
+  const symlinkPath = path.join(claudeSkillDir, skillId);
+  const targetPath = path.join(basePath, skillId);
+
+  // Create .claude/skills/ directory if needed
+  if (!fs.existsSync(claudeSkillDir)) {
+    fs.mkdirSync(claudeSkillDir, { recursive: true });
+    log.step(`Created directory: ${CLAUDE_SKILLS_PATH}/`);
+  }
+
+  // Remove existing symlink or directory if present
+  try {
+    const lstat = fs.lstatSync(symlinkPath);
+    if (lstat.isSymbolicLink() || lstat.isDirectory()) {
+      fs.unlinkSync(symlinkPath);
+    }
+  } catch {
+    // Path doesn't exist, nothing to remove
+  }
+
+  // Create relative symlink from .claude/skills/{id} -> ../../.agents/skills/{id}
+  const relativePath = path.relative(claudeSkillDir, targetPath);
+  try {
+    fs.symlinkSync(relativePath, symlinkPath, 'dir');
+    log.step(`Symlinked: ${CLAUDE_SKILLS_PATH}/${skillId} → ${DEFAULT_BASE_PATH}/${skillId}`);
+  } catch (err) {
+    log.warn(`Could not create symlink at ${CLAUDE_SKILLS_PATH}/${skillId}: ${err.message}`);
+    log.info('You may need to manually reference the skill in your Claude configuration.');
+  }
+}
+
 // --- Commands ---
 
 function listSkills() {
@@ -220,6 +262,10 @@ function initSkill(skill, basePath) {
 
   const fileCount = countFiles(targetDir);
   log.success(`${skill.displayName || skill.id} installed (${fileCount} markdown files)`);
+
+  // Create symlink in .claude/skills/ for Claude Code discovery
+  createClaudeSymlink(skill.id, basePath);
+
   return true;
 }
 
@@ -259,6 +305,10 @@ function updateSkill(skill, basePath) {
   }
 
   log.success(`${skill.displayName || skill.id} updated`);
+
+  // Ensure symlink in .claude/skills/ exists
+  createClaudeSymlink(skill.id, basePath);
+
   return true;
 }
 
@@ -397,9 +447,11 @@ function printNextSteps(skillIds) {
   console.log(`  1. Reference the installed skill(s) in your AI assistant prompts`);
   console.log(`  2. Read ${COLORS.cyan}SKILL.md${COLORS.reset} in each skill directory for quick start guide`);
   console.log();
+  console.log(`${COLORS.dim}Installed to ${DEFAULT_BASE_PATH}/ with symlinks in ${CLAUDE_SKILLS_PATH}/${COLORS.reset}`);
+  console.log();
   console.log(`${COLORS.dim}For Claude Code users, add to your CLAUDE.md:${COLORS.reset}`);
   for (const id of skillIds) {
-    console.log(`  "Reference the ${id} skill in .agents/skills/${id}/ for development."`);
+    console.log(`  "Reference the ${id} skill in ${CLAUDE_SKILLS_PATH}/${id}/ for development."`);
   }
   console.log();
 }
