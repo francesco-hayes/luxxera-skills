@@ -1,10 +1,14 @@
+---
+name: luxxera-ui
+description: |
+  **Luxxera UI Builder**: Generate premium healthcare landing pages and React components following the Luxxera design system, built on Shadcn UI + Tailwind CSS.
+
+  Use when Claude needs to: (1) Create Luxxera landing pages or components, (2) Build healthcare UI with premium aesthetics, (3) Generate React/TSX with Shadcn customizations, (4) Review or fix Luxxera design system compliance.
+
+  TRIGGERS: Luxxera, landing page, healthcare UI, clinic page, treatment page, Luxxera component, Luxxera button, Luxxera card, Shadcn Luxxera
+---
+
 # Luxxera UI Skill
-
-## Description
-
-**Luxxera UI Builder**: Generate premium healthcare landing pages and React components following the Luxxera design system, built on Shadcn UI.
-
-**MANDATORY TRIGGERS**: Luxxera, landing page, healthcare UI, clinic page, treatment page, Luxxera component, Luxxera button, Luxxera card, Shadcn Luxxera
 
 ## Overview
 
@@ -21,7 +25,7 @@ This skill enables you to build pixel-perfect Luxxera web interfaces using **Sha
 
 Before generating any Luxxera UI code:
 
-1. **Read the relevant rules** from the `rules/` directory
+1. **Read the relevant rules** from the `references/` directory
 2. **Check foundations first** (colors, typography, spacing)
 3. **Use established components** (buttons, cards, tags)
 4. **Follow section patterns** (hero, content, dark sections)
@@ -29,30 +33,28 @@ Before generating any Luxxera UI code:
 ## File Structure
 
 ```
-luxxera-agent/
-├── AGENTS.md                    # Agent identity and workflow
-├── SKILL.md                     # This file
-├── rules/
-│   ├── foundations/
-│   │   ├── shadcn.md            # Shadcn UI integration guide (READ FIRST)
-│   │   ├── colors.md            # Color palette and usage
-│   │   ├── typography.md        # Fonts, scales, patterns
-│   │   ├── spacing.md           # Fixed and fluid spacing
-│   │   └── layout.md            # Containers and grids
-│   ├── components/
-│   │   ├── buttons.md           # Button system
-│   │   ├── cards.md             # Card variants
-│   │   ├── inputs.md            # Input fields and forms
-│   │   ├── tags.md              # Tags and pills
-│   │   ├── navigation.md        # Nav patterns
-│   │   └── accordion.md         # FAQ/expandable
-│   └── patterns/
-│       ├── hero-sections.md     # Hero layouts
-│       ├── content-sections.md  # Section composition
-│       ├── articles.md          # Blog/article page formatting
-│       ├── image-treatment.md   # Overlays and containers
-│       └── best-practices.md    # DO's and DON'Ts
-└── LUXXERA_DESIGN_SYSTEM.md     # Full reference document
+luxxera-ui/
+├── SKILL.md                     # This file (entry point)
+└── references/
+    ├── foundations/
+    │   ├── shadcn.md            # Shadcn UI integration guide (READ FIRST)
+    │   ├── colors.md            # Color palette and usage
+    │   ├── typography.md        # Fonts, scales, patterns
+    │   ├── spacing.md           # Fixed and fluid spacing
+    │   └── layout.md            # Containers and grids
+    ├── components/
+    │   ├── buttons.md           # Button system
+    │   ├── cards.md             # Card variants
+    │   ├── inputs.md            # Input fields and forms
+    │   ├── tags.md              # Tags and pills
+    │   ├── navigation.md        # Nav patterns
+    │   └── accordion.md         # FAQ/expandable
+    └── patterns/
+        ├── hero-sections.md     # Hero layouts
+        ├── content-sections.md  # Section composition
+        ├── articles.md          # Blog/article page formatting
+        ├── image-treatment.md   # Overlays and containers
+        └── best-practices.md    # DO's and DON'Ts
 ```
 
 ## Usage Instructions
@@ -62,7 +64,7 @@ luxxera-agent/
 **Always use Shadcn UI components as the base** - never build from scratch if Shadcn provides it:
 
 ```
-1. Read rules/foundations/shadcn.md first
+1. Read references/foundations/shadcn.md first
 2. Use Shadcn components (Button, Card, Badge, etc.)
 3. Apply Luxxera variants via CVA or className overrides
 4. Preserve Radix primitives and accessibility features
@@ -71,18 +73,18 @@ luxxera-agent/
 ### When building a new page section:
 
 ```
-1. Read rules/foundations/shadcn.md for component approach
-2. Read rules/patterns/[section-type].md
-3. Read rules/foundations/colors.md for color context
-4. Read rules/foundations/typography.md for text styles
-5. Read rules/components/[needed-components].md
+1. Read references/foundations/shadcn.md for component approach
+2. Read references/patterns/[section-type].md
+3. Read references/foundations/colors.md for color context
+4. Read references/foundations/typography.md for text styles
+5. Read references/components/[needed-components].md
 6. Generate code following the patterns
 ```
 
 ### When building an article/blog page:
 
 ```
-1. Read rules/patterns/articles.md for complete structure
+1. Read references/patterns/articles.md for complete structure
 2. Use 900px max-width for article body content
 3. Use paragraph-1 (20px/32px) for body text
 4. Use headline-5 (36px) for section headers
@@ -93,16 +95,16 @@ luxxera-agent/
 ### When creating a component:
 
 ```
-1. Read rules/components/[component].md
-2. Check rules/foundations/spacing.md for padding/gaps
-3. Apply rules/best-practices.md guidelines
+1. Read references/components/[component].md
+2. Check references/foundations/spacing.md for padding/gaps
+3. Apply references/best-practices.md guidelines
 4. Generate code with proper Tailwind classes
 ```
 
 ### When reviewing existing code:
 
 ```
-1. Read rules/patterns/best-practices.md
+1. Read references/patterns/best-practices.md
 2. Cross-reference against foundation rules
 3. Identify violations and suggest corrections
 ```

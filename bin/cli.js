@@ -75,9 +75,8 @@ ${COLORS.bright}Examples:${COLORS.reset}
 
 ${COLORS.bright}After Installation:${COLORS.reset}
   Each skill is installed to ${COLORS.cyan}${DEFAULT_BASE_PATH}/{skill-name}/${COLORS.reset} with:
-  - AGENTS.md      → Agent identity and workflow
-  - SKILL.md       → Skill triggers and quick reference
-  - rules/         → Detailed skill rules and documentation
+  - SKILL.md       → Skill entry point (frontmatter + instructions)
+  - references/    → Detailed documentation (foundations, components, patterns)
 
   A symlink is created at ${COLORS.cyan}${CLAUDE_SKILLS_PATH}/{skill-name}/${COLORS.reset} → ${DEFAULT_BASE_PATH}/{skill-name}/
   so Claude Code auto-discovers the skill.
@@ -238,7 +237,7 @@ function initSkill(skill, basePath) {
   }
 
   // Check if already installed
-  const agentFile = path.join(targetDir, 'AGENTS.md');
+  const agentFile = path.join(targetDir, 'SKILL.md');
   if (fs.existsSync(agentFile)) {
     log.warn(`Skill "${skill.id}" already installed at ${targetDir}`);
     log.info(`Use "update ${skill.id}" to update existing files.`);
@@ -275,7 +274,7 @@ function updateSkill(skill, basePath) {
   log.info(`Updating ${COLORS.cyan}${skill.displayName || skill.id}${COLORS.reset} in: ${COLORS.cyan}${targetDir}${COLORS.reset}`);
 
   // Check if installed
-  const agentFile = path.join(targetDir, 'AGENTS.md');
+  const agentFile = path.join(targetDir, 'SKILL.md');
   if (!fs.existsSync(agentFile)) {
     log.error(`Skill "${skill.id}" not found at ${targetDir}`);
     log.info(`Use "init ${skill.id}" to install first.`);
@@ -383,7 +382,7 @@ function updateCommand(skillNames, updateAll, basePath) {
     let updated = 0;
     for (const skill of skills) {
       const targetDir = path.join(basePath, skill.id);
-      if (fs.existsSync(path.join(targetDir, 'AGENTS.md'))) {
+      if (fs.existsSync(path.join(targetDir, 'SKILL.md'))) {
         if (updateSkill(skill, basePath)) updated++;
         console.log();
       }
@@ -401,7 +400,7 @@ function updateCommand(skillNames, updateAll, basePath) {
     // Find installed skills
     const installed = skills.filter((s) => {
       const targetDir = path.join(basePath, s.id);
-      return fs.existsSync(path.join(targetDir, 'AGENTS.md'));
+      return fs.existsSync(path.join(targetDir, 'SKILL.md'));
     });
 
     if (installed.length === 1) {
