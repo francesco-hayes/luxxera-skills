@@ -1,6 +1,6 @@
 # Luxxera Skills
 
-AI-powered skills for premium development. Install specialized skills into your AI assistant (Claude Code, Cursor, etc.) to enhance code generation with domain-specific knowledge.
+Multi-tool AI skills for premium development. Install specialized skills into your AI assistants—Claude Code, Cursor, Windsurf, GitHub Copilot—from a single source.
 
 ## Quick Install
 
@@ -8,14 +8,43 @@ AI-powered skills for premium development. Install specialized skills into your 
 # List available skills
 npx @francesco-hayes/luxxera-skills list
 
-# Install a skill
+# Install a skill (auto-installs for Claude, Cursor, Windsurf)
 npx @francesco-hayes/luxxera-skills init luxxera-ui
 ```
 
+## Architecture
+
+Skills are installed to a **single primary location** (`.agents/skills/`) with tool-specific paths created as symlinks or generated files:
+
+```
+your-project/
+├── .agents/skills/luxxera-ui/     ← PRIMARY (source of truth)
+│   ├── SKILL.md
+│   └── references/
+├── .claude/skills/luxxera-ui/     ← SYMLINK → .agents/skills/luxxera-ui/
+├── .cursor/rules/luxxera-ui/      ← SYMLINK → .agents/skills/luxxera-ui/
+└── .windsurf/rules/luxxera-ui.md  ← CONSOLIDATED FILE
+```
+
+**Benefits:**
+- Edit files in `.agents/skills/` - changes are immediately visible to Claude Code and Cursor via symlinks
+- Run `update` to regenerate consolidated files for Windsurf after edits
+- Only one copy of the full documentation on disk
+
+## Supported AI Tools
+
+| Tool | Location | Format |
+|------|----------|--------|
+| **Primary** | `.agents/skills/{skill}/` | Full structure (source of truth) |
+| **Claude Code** | `.claude/skills/{skill}/` | Symlink to primary |
+| **Cursor** | `.cursor/rules/{skill}/` | Symlink to primary |
+| **Windsurf** | `.windsurf/rules/{skill}.md` | Consolidated file |
+| **GitHub Copilot** | `.github/copilot-instructions.md` | Appended section |
+
 ## Available Skills
 
-| Skill        | Description                                                                                              |
-|--------------|----------------------------------------------------------------------------------------------------------|
+| Skill | Description |
+|-------|-------------|
 | `luxxera-ui` | Premium healthcare UI design system. Shadcn UI + Tailwind CSS components following the Luxxera design language. |
 
 ## CLI Commands
@@ -29,20 +58,21 @@ npx @francesco-hayes/luxxera-skills list
 ### Install skill(s)
 
 ```bash
-# Install a specific skill
+# Install for all default tools (Claude, Cursor, Windsurf)
 npx @francesco-hayes/luxxera-skills init luxxera-ui
 
-# Install multiple skills
-npx @francesco-hayes/luxxera-skills init luxxera-ui api-design
+# Install for only one tool
+npx @francesco-hayes/luxxera-skills init luxxera-ui --only cursor
+
+# Install for specific tools
+npx @francesco-hayes/luxxera-skills init luxxera-ui --tools claude,copilot
+
+# Install for all supported tools
+npx @francesco-hayes/luxxera-skills init luxxera-ui --tools all
 
 # Install all available skills
 npx @francesco-hayes/luxxera-skills init --all
-
-# Install to a custom path
-npx @francesco-hayes/luxxera-skills init luxxera-ui --path ./custom/skills
 ```
-
-Each skill is installed to `.claude/skills/{skill-name}/` by default.
 
 ### Update skill(s)
 
@@ -52,60 +82,55 @@ npx @francesco-hayes/luxxera-skills update luxxera-ui
 
 # Update all installed skills
 npx @francesco-hayes/luxxera-skills update --all
+
+# Update only for specific tools
+npx @francesco-hayes/luxxera-skills update luxxera-ui --only cursor
 ```
 
-Updates create a timestamped backup before overwriting files.
-
-## What Gets Installed
-
-Each skill installs to `.claude/skills/{skill-name}/` with:
-
-```text
-.claude/skills/{skill-name}/
-├── AGENTS.md      → Agent identity and workflow
-├── SKILL.md       → Skill triggers and quick reference
-└── rules/         → Detailed rules and documentation
-```
+Updates:
+1. Refresh the primary location from the package source
+2. Verify/recreate symlinks for Claude Code
+3. Regenerate consolidated files for Cursor/Windsurf (includes any local edits from primary)
 
 ## Usage with AI Assistants
 
 ### Claude Code
 
-After installing a skill, add to your project's `CLAUDE.md`:
+After installing, add to your project's `CLAUDE.md`:
 
 ```markdown
-Reference the luxxera-ui skill in `.claude/skills/luxxera-ui/` for all UI development.
-Always read the relevant rules before generating components.
+Use the luxxera-ui skill in .claude/skills/luxxera-ui/ for all UI development.
 ```
 
-Or reference skills directly in prompts:
+Or reference in prompts:
 
 ```
-Read the Luxxera agent rules and create a hero section for the procedures page
+Read the Luxxera UI skill and create a hero section for the procedures page
 ```
 
-### Cursor / Other AI IDEs
+### Cursor
 
-Add to your rules or system prompt:
+Skills are auto-detected from `.cursor/rules/`. Just start coding and reference the design system in your prompts.
 
-```
-When building UI components, reference the design system in .claude/skills/luxxera-ui/.
-Check foundations (colors, typography, spacing) before generating code.
-```
+### Windsurf
 
-## Migrating from @francesco-hayes/luxxera-agent
+Skills are auto-detected from `.windsurf/rules/`. Reference in prompts as needed.
 
-This package replaces `@francesco-hayes/luxxera-agent`. The `luxxera-ui` skill content is identical. Simply run:
+### GitHub Copilot
+
+Add `--tools copilot` when installing to include Copilot support:
 
 ```bash
-npx @francesco-hayes/luxxera-skills init luxxera-ui
+npx @francesco-hayes/luxxera-skills init luxxera-ui --tools claude,cursor,copilot
 ```
 
-If you already have files at `.claude/skills/luxxera-ui/`, use `update` instead:
+## Local Customization
 
-```bash
-npx @francesco-hayes/luxxera-skills update luxxera-ui
-```
+To customize the skill for your project:
+
+1. Edit files directly in `.agents/skills/luxxera-ui/`
+2. Changes are immediately visible to Claude Code and Cursor (via symlinks)
+3. Run `npx @francesco-hayes/luxxera-skills update luxxera-ui` to regenerate consolidated files for Windsurf
 
 ## Adding New Skills
 
@@ -124,7 +149,10 @@ To add a skill to this package:
    }
    ```
 
-3. Add a `templates/` directory containing the files to install (`AGENTS.md`, `SKILL.md`, `rules/`)
+3. Add a `templates/` directory containing:
+   - `SKILL.md` with YAML frontmatter (name, description)
+   - `references/` directory with documentation files
+
 4. The CLI auto-discovers skills from `skills/*/skill.json`
 
 ## License
